@@ -34,20 +34,7 @@ public class getApproximation7 {
     }
 
 
-    /**
-     * double d=4.22;
-     *
-     * 小数转为整数分为：
-     * 1.直接去除小数：Integer.parseInt(d);
-     * 直接舍掉小数bai 比如float是4.7 转换du成int 后是4 而不是5 要四舍五入的zhi话转换前先加dao上0.5
-     * 比如 int i ; double j = 4.7; i = (int)(j+0.5);
-     * 2.4舍5入到整数：Math.round(d);
-     * 3.取小数的最小整数(向下取整)：Math.floor(d);
-     * 4.取小数的最大整数（向上取整）：Math.ceil(d);
-     *
-     * @param number
-     * @return
-     */
+
     private static int getApproximation(double number) {
         int re = (int)number;
         return  (number - re) >= 0.5 ? re + 1 : re;

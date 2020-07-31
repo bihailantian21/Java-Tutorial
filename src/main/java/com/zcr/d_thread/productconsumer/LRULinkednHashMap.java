@@ -1,31 +1,6 @@
 package com.zcr.d_thread.productconsumer;
 
 
-/**
- * 18.	LinkedHashMap：LinkedHashMap是HashMap的子类，二者区别在于LinkedHashMap在HashMap的基础上
- * 采用双向链表将冲突链表的entry联系起来，这样保证了元素的遍历顺序跟插入顺序相同。可用于实现缓存。
- *
- * 冲突链表加入了双向链表的元素（before、after、next，其中next用于保证entry的链表结构，before、after用于完成双向链表的定义），
- * 同时引入了header指向双向链表的头部（哑元）。
- *
- * 这样LinkedHashMap在遍历的时候不同于HashMap需要先遍历整个table，LinkedHashMap只需要遍历header指向的双向链表即可，
- * 因此LinkedHashMap的迭代时间只和entry数量相关。其他的包括初始容量、负载因子以及hashCode、equals方法基本和HashMap一致。
- *
- * put()
- * put(K key，V value)方法插入过程类似HashMap，不同的是这里的插入有两个含义：
- * 对于table而言，新的entry插入到指定的bucket时如果产生冲突，使用头插法将entry插入冲突链表头部
- * 对于header而言，新的entry需要插入双向链表的尾部（保证迭代顺序）
- *
- * remove()
- * remove(Object key)删除过程类似HashMap的remove，不同的是这里的删除也有两个含义：
- * 对于table来说，删除对应bucket中的entry，然后修改冲突链表引用
- * 对于header来说，将entry从双向链表删除，然后修改冲突链表该位置前后元素的引用
- *
- * 1.存储结构
- * 继承自 HashMap，因此具有和 HashMap 一样的快速查找特性。
- * public class LinkedHashMap<K,V> extends HashMap<K,V> implements Map<K,V>
- * 内部维护了一个双向链表，用来维护插入顺序或者 LRU 顺序。
- * /**
 
 
 

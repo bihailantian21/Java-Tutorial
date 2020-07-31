@@ -541,14 +541,416 @@ Java访问集合总是通过统一的方式——迭代器（Iterator）来实�
    
 LinkedList
 通过“链表”也实现了List接口。在LinkedList中，它的内部每个元素都指向下一个元素
-(2)
+(2)Set
 Set用于存储不重复的元素集合，它主要提供以下几个方法：
 将元素添加进Set<E>：boolean add(E e)
 将元素从Set<E>删除：boolean remove(Object e)
 判断是否包含元素：boolean contains(Object e)
 
-(3)
+(3)Map
+HashMap
+TreeMap
+LinkedHashMap---用于实现先进先出缓存,使用双向链表来维护元素的顺序，顺序为插入顺序或者最近最少使用（LRU）顺序。可用于实现缓存。
+
+遍历Map的方法：
+一：
+方法一 在for-each循环中使用entries来遍历
+这是最常见的并且在大多数情况下也是最可取的遍历方式。在键值都需要时使用。
+Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+}
+如果你遍历的是一个空的map对象，for-each循环将抛出NullPointerException，因此在遍历前你总是应该检查空引用。
+
+二：
+方法二 在for-each循环中遍历keys或values。
+如果只需要map中的键或者值，你可以通过keySet或values来实现遍历，而不是用entrySet。
+Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+//遍历map中的键
+for (Integer key : map.keySet()) {
+    System.out.println("Key = " + key);
+}
+//遍历map中的值
+for (Integer value : map.values()) {
+    System.out.println("Value = " + value);
+}
+该方法比entrySet遍历在性能上稍好（快了10%），而且代码更加干净。
+
+三：
+方法三使用Iterator遍历
+使用泛型：
+Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+Iterator<Map.Entry<Integer, Integer>> entries = map.entrySet().iterator();
+while (entries.hasNext()) {
+    Map.Entry<Integer, Integer> entry = entries.next();
+    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+}
+不使用泛型：
+Map map = new HashMap();
+Iterator entries = map.entrySet().iterator();
+while (entries.hasNext()) {
+    Map.Entry entry = (Map.Entry) entries.next();
+    Integer key = (Integer)entry.getKey();
+    Integer value = (Integer)entry.getValue();
+    System.out.println("Key = " + key + ", Value = " + value);
+}
+也可以在keySet和values上应用同样的方法。
+该种方式看起来冗余却有其优点所在。首先，在老版本java中这是惟一遍历map的方式。
+另一个好处是，你可以在遍历时调用iterator.remove()来删除entries，另两个方法则不能。
+根据javadoc的说明，如果在for-each遍历中尝试使用此方法，结果是不可预测的。
+从性能方面看，该方法类同于for-each遍历（即方法二）的性能。
+四：
+方法四、通过键找值遍历（效率低）
+Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+for (Integer key : map.keySet()) {
+    Integer value = map.get(key);
+    System.out.println("Key = " + key + ", Value = " + value);
+}
+作为方法一的替代，这个代码看上去更加干净；但实际上它相当慢且无效率。
+因为从键取值是耗时的操作（与方法一相比，在不同的Map实现中该方法慢了20%~200%）。
+如果你安装了FindBugs，它会做出检查并警告你关于哪些是低效率的遍历。所以尽量避免使用。
+/**
+     * 1.HashMap的方法
+     * containsKey()
+     * get()   getOrDefault()
+     * put()   putIfAbsent()
+     *
+     *
+     * 2.如何遍历HashMap Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+     *1、 通过ForEach循环进行遍历
+     *      for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+     * 			System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+     *      }
+     *2、 ForEach迭代键值对方式
+     *      // 迭代键
+     * 		for (Integer key : map.keySet()) {
+     * 			System.out.println("Key = " + key);
+     *      }
+     * 		// 迭代值
+     * 		for (Integer value : map.values()) {
+     * 			System.out.println("Value = " + value);
+     *      }
+     *3、使用带泛型的迭代器进行遍历
+     *      Iterator<Map.Entry<Integer, Integer>> entries = map.entrySet().iterator();
+     * 		while (entries.hasNext()) {
+     * 			Map.Entry<Integer, Integer> entry = entries.next();
+     * 			System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+     *       }
+     *4、使用不带泛型的迭代器进行遍历
+     *      Iterator<Map.Entry> entries = map.entrySet().iterator();
+     * 		while (entries.hasNext()) {
+     * 			Map.Entry entry = (Map.Entry) entries.next();
+     * 			Integer key = (Integer) entry.getKey();
+     * 			Integer value = (Integer) entry.getValue();
+     * 			System.out.println("Key = " + key + ", Value = " + value);
+     *       }
+     *5、通过Java8 Lambda表达式遍历
+     *      map.forEach((k, v) -> System.out.println("key: " + k + " value:" + v));
+     *
+     *
+     *
+     *
+     
+ 
+LinkedHashMap
+
+一、LinkedHashMap和HashMap区别
+大多数情况下，只要不涉及线程安全问题，Map基本都可以使用HashMap，不过HashMap有一个问题，就是迭代HashMap的顺序并不是HashMap放置的顺序，也就是无序。
+HashMap的这一缺点往往会带来困扰，因为有些场景，我们期待一个有序的Map.这就是我们的LinkedHashMap,看个小Demo:
+  public static void main(String[] args) {
+      Map<String, String> map = new LinkedHashMap<String, String>();
+      map.put("apple", "苹果");
+      map.put("watermelon", "西瓜");
+      map.put("banana", "香蕉");
+      map.put("peach", "桃子");
+      Iterator iter = map.entrySet().iterator();
+      while (iter.hasNext()) {
+          Map.Entry entry = (Map.Entry) iter.next();
+          System.out.println(entry.getKey() + "=" + entry.getValue());
+      }
+  }
+输出为：
+  apple=苹果
+  watermelon=西瓜
+  banana=香蕉
+  peach=桃子
+可以看到，在使用上，LinkedHashMap和HashMap的区别就是LinkedHashMap是有序的。
+上面这个例子是根据插入顺序排序，此外，LinkedHashMap还有一个参数决定是否在此基础上再根据访问顺序(get,put)排序,
+记住，是在插入顺序的基础上再排序，后面看了源码就知道为什么了。看下例子:
+  public static void main(String[] args) {
+      Map<String, String> map = new LinkedHashMap<String, String>(16,0.75f,true);
+      map.put("apple", "苹果");
+      map.put("watermelon", "西瓜");
+      map.put("banana", "香蕉");
+      map.put("peach", "桃子");
+      map.get("banana");
+      map.get("apple");
+      Iterator iter = map.entrySet().iterator();
+      while (iter.hasNext()) {
+          Map.Entry entry = (Map.Entry) iter.next();
+          System.out.println(entry.getKey() + "=" + entry.getValue());
+      }
+  }
+输出为：
+  watermelon=西瓜
+  peach=桃子
+  banana=香蕉
+  apple=苹果
+可以看到香蕉和苹果在原来排序的基础上又排后了。
+  
+二、底层实现
+LinkedHashMap：LinkedHashMap是HashMap的子类，二者区别在于LinkedHashMap在HashMap的基础上
+采用双向链表将冲突链表的entry联系起来，这样保证了元素的遍历顺序跟插入顺序相同，可用于实现缓存。内部维护了一个双向链表，用来维护插入顺序或者 LRU 顺序。
+
+LinkedHashMap的数据存储和HashMap的结构一样采用(数组+单向链表)的形式，只是在每次节点Entry中增加了用于维护顺序的before和after变量
+维护了一个双向链表来保存LinkedHashMap的存储顺序，当调用迭代器的时候不再使用HashMap的的迭代器，而是自己写迭代器来遍历这个双向链表即可。
+
+冲突链表加入了双向链表的元素（before、after、next，其中next用于保证entry的链表结构，before、after用于完成双向链表的定义），
+同时引入了header指向双向链表的头部（哑元）。
+
+这样LinkedHashMap在遍历的时候不同于HashMap需要先遍历整个table，LinkedHashMap只需要遍历header指向的双向链表即可，
+因此LinkedHashMap的迭代时间只和entry数量相关。其他的包括初始容量、负载因子以及hashCode、equals方法基本和HashMap一致。
+
+ * put()
+ * put(K key，V value)方法插入过程类似HashMap，不同的是这里的插入有两个含义：
+ * 对于table而言，新的entry插入到指定的bucket时如果产生冲突，使用头插法将entry插入冲突链表头部
+ * 对于header而言，新的entry需要插入双向链表的尾部（保证迭代顺序）
+ *
+ * remove()
+ * remove(Object key)删除过程类似HashMap的remove，不同的是这里的删除也有两个含义：
+ * 对于table来说，删除对应bucket中的entry，然后修改冲突链表引用
+ * 对于header来说，将entry从双向链表删除，然后修改冲突链表该位置前后元素的引用
  
+钩子技术，在put和get的时候维护好了这个双向链表，遍历的时候就有序了。好了，一步一步的跟。 
+1.先看一下LinkedHashMap中的Entry(也就是每个元素):
+private static class Entry<K,V> extends HashMap.Entry<K,V> {
+    Entry<K,V> before, after;
+    Entry(int hash, K key, V value, HashMap.Entry<K,V> next) {
+        super(hash, key, value, next);
+    }
+}
+可以看到继承自HashMap的Entry，并且多了两个指针before和after，这两个指针说白了，就是为了维护双向链表新加的两个指针。
+列一下新Entry的所有成员变量吧:
+K key
+V value
+Entry<K, V> next
+int hash
+Entry<K, V> before
+Entry<K, V> after
+其中前面四个，是从HashMap.Entry中继承过来的；后面两个，是是LinkedHashMap独有的。
+不要搞错了next和before、After，next是用于维护HashMap指定table位置上连接的Entry的顺序的，
+before、After是用于维护Entry插入的先后顺序的(为了维护双向链表)。
+2.1 初始化
+public LinkedHashMap() {
+    super();
+    accessOrder = false;
+}
+public HashMap() {
+     this.loadFactor = DEFAULT_LOAD_FACTOR;
+     threshold = (int)(DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
+     table = new Entry[DEFAULT_INITIAL_CAPACITY];
+     init();
+}
+void init() {
+     header = new Entry<K,V>(-1, null, null, null);
+     header.before = header.after = header;
+}
+这里出现了第一个钩子技术,尽管init()方法定义在HashMap中，但是由于LinkedHashMap重写了init方法，所以根据多态的语法，
+会调用LinkedHashMap的init方法，该方法初始化了一个Header,这个Header就是双向链表的链表头..
+2.2 LinkedHashMap添加元素
+HashMap中的put方法:
+ public V put(K key, V value) {
+     if (key == null)
+         return putForNullKey(value);
+     int hash = hash(key.hashCode());
+     int i = indexFor(hash, table.length);
+     for (Entry<K,V> e = table[i]; e != null; e = e.next) {
+         Object k;
+         if (e.hash == hash && ((k = e.key) == key || key.equals(k))) {
+             V oldValue = e.value;
+             e.value = value;
+             e.recordAccess(this);
+             return oldValue;
+         }
+     } 
+     modCount++;
+     addEntry(hash, key, value, i);
+     return null;
+}
+LinkedHashMap中的addEntry(又是一个钩子技术):
+void addEntry(int hash, K key, V value, int bucketIndex) {
+     createEntry(hash, key, value, bucketIndex);
+     // Remove eldest entry if instructed, else grow capacity if appropriate
+     Entry<K,V> eldest = header.after;
+     if (removeEldestEntry(eldest)) {
+         removeEntryForKey(eldest.key);
+     } else {
+         if (size >= threshold)
+             resize(2 * table.length);
+    }
+ }
+void createEntry(int hash, K key, V value, int bucketIndex) {
+    HashMap.Entry<K,V> old = table[bucketIndex];
+    Entry<K,V> e = new Entry<K,V>(hash, key, value, old);
+    table[bucketIndex] = e;
+    e.addBefore(header);
+    size++;
+}
+private void addBefore(Entry<K,V> existingEntry) {
+    after  = existingEntry;
+    before = existingEntry.before;
+    before.after = this;
+    after.before = this;
+}
+好了，addEntry先把数据加到HashMap中的结构中(数组+单向链表),然后调用addBefore，这个我就不和大家画图了，
+其实就是挪动自己和Header的Before与After成员变量指针把自己加到双向链表的尾巴上。
+同样的，无论put多少次，都会把当前元素加到队列尾巴上。这下大家知道怎么维护这个双向队列的了吧。
+
+上面说了LinkedHashMap在新增数据的时候自动维护了双向列表，这要还要提一下的是LinkedHashMap的另外一个属性，根据查询顺序排序,
+说白了，就是在get的时候或者put(更新时)把元素丢到双向队列的尾巴上。这样不就排序了吗？这里涉及到LinkedHashMap的另外一个构造方法:
+public LinkedHashMap(int initialCapacity,float loadFactor,boolean accessOrder) {
+    super(initialCapacity, loadFactor);
+    this.accessOrder = accessOrder;
+}
+第三个参数，accessOrder为是否开启查询排序功能的开关，默认为False。如果想开启那么必须调用这个构造方法。
+然后看下get和put(更新操作)时是如何维护这个队列的。
+public V get(Object key) {
+    Entry<K,V> e = (Entry<K,V>)getEntry(key);
+    if (e == null)
+        return null;
+    e.recordAccess(this);
+    return e.value;
+}
+此外，在put的时候，代码11行(见上面的代码)，也是调用了e.recordAccess(this);我们来看下这个方法:
+void recordAccess(HashMap<K,V> m) {
+    LinkedHashMap<K,V> lm = (LinkedHashMap<K,V>)m;
+    if (lm.accessOrder) {
+        lm.modCount++;
+        remove();
+        addBefore(lm.header);
+    }
+}
+private void remove() {
+    before.after = after;
+    after.before = before;
+}
+private void addBefore(Entry<K,V> existingEntry) {
+    after  = existingEntry;
+    before = existingEntry.before;
+    before.after = this;
+    after.before = this;
+}
+看到每次recordAccess的时候做了两件事情：
+1.把待移动的Entry的前后Entry相连
+2.把待移动的Entry移动到尾部
+当然，这一切都是基于accessOrder=true的情况下。
+
+
+
+
+三、removeEldestEntry方法的使用
+使用方式一：继承LinkedHashMap父类，覆盖这个方法
+LinkedHashMap有一个removeEldestEntry(Map.Entry eldest)方法，通过覆盖这个方法，加入一定的条件，满足条件返回true。
+当put进新的值方法返回true时，便移除该map中最老的键和值。
+public class LinkedHashMapTest {
+ public static void main(String[] args) {
+  Map map = new FixedSizeLinkedHashMap();
+  System.out.println(map.size());
+  for(int i = 0; i < 50; i++) {
+   map.put(i, true);
+   System.out.println(map.size());
+   System.out.println(map);
+  }
+ }
+}
+class FixedSizeLinkedHashMap extends LinkedHashMap{ 
+ private static int MAX_ENTRIES = 10;
+ /**
+  * 获得允许存放的最大容量
+  * @return int
+  */
+ public static int getMAX_ENTRIES() {
+  return MAX_ENTRIES;
+ }
+
+ /**
+  * 设置允许存放的最大容量
+  * @param int max_entries
+  */
+ public static void setMAX_ENTRIES(int max_entries) {
+  MAX_ENTRIES = max_entries;
+ }
+
+ /**
+  * 如果Map的尺寸大于设定的最大长度，返回true，再新加入对象时删除最老的对象
+  * @param Map.Entry eldest
+  * @return int
+  */
+ protected boolean removeEldestEntry(Map.Entry eldest) {
+        return size() > MAX_ENTRIES;
+     }
+}
+使用方式二：通过这样的方式进行覆盖，不需要继承再写一个类了
+用法:private boolean removeEldestEntry(Map.Entry eldest)
+参数：该方法接受一个最老的参数，该参数表示映射中最近插入的条目。如果映射具有访问顺序，则最旧引用最近访问最少的条目，如果此方法返回true，则将其删除。
+如果在put或putAll调用之前映射为空，则这将是刚刚插入的条目；换句话说，如果Map包含单个条目，则最旧的条目也是最新的条目。
+返回值：如果将最旧的条目从映射中删除，则映射返回true；如果不删除或保留该条目，则返回false。
+当映射表表示一个高速缓存时，此功能非常有用，在该高速缓存表中，它允许映射表通过依次删除陈旧条目来减少内存消耗。
+下面的程序用于说明java.util.LinkedHashMap.removeEldestEntry()方法的用法：
+public class Linked_Hash_Map_Demo { 
+    private static final int MAX = 3; 
+    public static void main(String[] args) 
+    { 
+        LinkedHashMap<Integer, String> li_hash_map =  
+        new LinkedHashMap<Integer, String>() { 
+            protected boolean removeEldestEntry(Map.Entry<Integer, String> eldest) 
+            { 
+                return size() > MAX; 
+            } 
+        }; 
+        li_hash_map.put(0, "Welcome"); 
+        li_hash_map.put(1, "To"); 
+        li_hash_map.put(2, "The"); 
+        System.out.println("" + li_hash_map); 
+        li_hash_map.put(6, "GeeksforGeeks"); 
+        System.out.println("" + li_hash_map); 
+        li_hash_map.put(7, "Hello"); 
+        System.out.println("" + li_hash_map); 
+    } 
+}
+四、用于LRU 
+LRU即Least Recently Used，最近最少使用，也就是说，当缓存满了，会优先淘汰那些最近最不常访问的数据。
+我们的LinkedHashMap正好满足这个特性，为什么呢？当我们开启accessOrder为true时，最新访问(get或者put(更新操作))的数据会被丢到队列的尾巴处，那么双向队列的头就是最不经常使用的数据了。
+比如:如果有1 2 3这3个Entry，那么访问了1，就把1移到尾部去，即2 3 1。每次访问都把访问的那个数据移到双向队列的尾部去，
+那么每次要淘汰数据的时候，双向队列最头的那个数据不就是最不常访问的那个数据了吗？换句话说，双向链表最头的那个数据就是要淘汰的数据。
+此外，LinkedHashMap还提供了一个方法，这个方法就是为了我们实现LRU缓存而提供的，removeEldestEntry(Map.Entry<K,V> eldest) 方法。
+该方法可以提供在每次添加新条目时移除最旧条目的实现程序，默认返回 false。
+
+ class LRUCache<K, V> extends LinkedHashMap<K, V> {
+     private static final int MAX_ENTRIES = 3;
+     protected boolean removeEldestEntry(Map.Entry eldest) {
+         return size() > MAX_ENTRIES;
+     }
+     LRUCache() {
+         super(MAX_ENTRIES, 0.75f, true);
+     }
+ }
+ public class LRULinkednHashMap {
+     public static void main(String[] args) {
+         LRUCache<Integer, String> cache = new LRUCache<>();
+         cache.put(1, "a");
+         cache.put(2, "b");
+         cache.put(3, "c");
+         cache.get(1);
+         cache.put(4, "d");
+         System.out.println(cache.keySet());
+     }
+ //[3, 1, 4]
+ 总结：其实 LinkedHashMap 几乎和 HashMap 一样：从技术上来说，不同的是它定义了一个 Entry<K,V> header，这个 header 不是放在 Table 里，它是额外独立出来的。
+ LinkedHashMap 通过继承 hashMap 中的 Entry<K,V>,并添加两个属性 Entry<K,V> before,after,和 header 结合起来组成一个双向链表，来实现按插入顺序或访问顺序排序。
+ 如何维护这个双向链表了，就是在get和put的时候用了钩子技术(多态)调用LinkedHashMap重写的方法来维护这个双向链表，然后迭代的时候直接迭代这个双向链表即可。
+    
+    
  
   
  (4)队列（Queue）是一种经常使用的集合。
