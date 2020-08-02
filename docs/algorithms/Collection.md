@@ -547,6 +547,24 @@ Set用于存储不重复的元素集合，它主要提供以下几个方法：
 将元素从Set<E>删除：boolean remove(Object e)
 判断是否包含元素：boolean contains(Object e)
 
+如何遍历set：
+方法一：集合类的通用遍历方式, 从很早的版本就有, 用迭代器迭代
+            Iterator it1 = set.iterator();
+            while(it1.hasNext()){
+                System.out.println(it1.next());
+            }
+       或
+       for(Iterator it2 = set.iterator();it2.hasNext();){
+                   System.out.println(it2.next());
+               }
+
+方法二：增强型for循环遍历
+            for(String value: set){
+                System.out.println(value);
+            }
+
+
+
 (3)Map
 HashMap
 TreeMap
@@ -1035,4 +1053,37 @@ Deque实现了一个双端队列（Double Ended Queue），它可以：
    
    当我们把Deque作为Stack使用时，注意只调用push()/pop()/peek()方法，不要调用addFirst()/removeFirst()/peekFirst()方法，这样代码更加清晰。
    最后，不要使用遗留类Stack。
+   
+   
+   7. /**
+          * 补充：数组去重问题
+          *
+          * 法一：使用数组
+          * (1)遍历数组，将元素依次添加进结果集中，如果结果集中已经存在，则不再添加，O(n*n)
+          * (2)如果知道元素范围，比如是字母，或者数字在固定范围内，可以采用辅助数组，辅助数组下标是去重数组的元素，辅助数组元素时去重数组元素的个数，O(n)
+          * (3)先将原数组排序，在与相邻的进行比较，如果不同则存入新数组
+          
+          * 法二：使用List()
+          * (1)用list.contains()判断是否重复.创建一个集合，然后遍历数组逐一放入集合，只要在放入之前用contains()方法判断一下集合中是否已经存在这个元素就行了.
+          *
+          * 法三：使用Set(HashSet、TreeSet)
+          * (1)利用HashSet集合无序不可重复的特性进行元素过滤
+          * (2)TreeSet不仅可以使元素不重复，而且可以实现排序等功能的集合
+          *
+          */
+          
+          
+   8./**
+        * 补充：数组排序问题
+        * 法一：使用Arrays.sort()
+        * java.util.Arrays.sort()
+        * 支持对int[],long[],short[],char[],byte[],float[],double[],Object[]进行排序
+        *
+        * 法二：使用Collections.sort()
+        * java.util.Collections.sort()   对List数组排序 推荐使用方法 使用 Collections.sort(list, Comparator(){});
+        * 通过实现内部compare方法实现对象的比较
+        *
+        * 法三：使用TreeSet
+        *
+        */
   

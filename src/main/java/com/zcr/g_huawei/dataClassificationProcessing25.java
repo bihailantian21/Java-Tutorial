@@ -1,7 +1,7 @@
 package com.zcr.g_huawei;
 
 
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * 数据分类处理
@@ -68,16 +68,88 @@ import java.util.Scanner;
  */
 public class dataClassificationProcessing25 {
 
+
+    /**
+     * 1,数组去重+排序问题，使用treeset，但是泛型要是数字，不是数字是别的的话，还需要实现comparator
+     *
+     * 2,这道题不难，主要考察数据结构的应用
+     * @param args
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
-        String s = Integer.toBinaryString(n);
-        int result = 0;
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == '1') {
-                result++;
+        while (scanner.hasNext()) {
+            int n = scanner.nextInt();
+            String[] i = new String[n];
+            for (int j = 0; j < n; j++) {
+                i[j] = scanner.next();
             }
+
+            int m = scanner.nextInt();
+            TreeSet<Integer> r = new TreeSet<>();
+            for (int j = 0; j < m; j++) {
+                r.add(scanner.nextInt());
+            }
+
+            /*下面选用ArrayList和LinkedHashMap的方式不行，因为可能遇到没有匹配的也记上了数，后面还得判断然后去掉。
+            int size = 0;
+            ArrayList<LinkedHashMap<Integer,String>> list = new ArrayList<>();
+            for (Integer integer : r) {
+                String rnumber = String.valueOf(integer);
+                int count = 0;
+                LinkedHashMap<Integer,String> map = new LinkedHashMap<>();
+                for (int k = 0; k < n; k++) {
+                    if (i[k].contains(rnumber)) {
+                        map.put(k,i[k]);
+                        count++;
+                    }
+                }
+                size += count*2+2;
+                list.add(map);
+            }
+
+            System.out.print(size + " ");
+
+            int ruleindex = 0;
+            for (Integer integer : r) {
+                LinkedHashMap<Integer,String> map = list.get(ruleindex);
+                if (map.size() == 0) {
+                    continue;
+                }
+                System.out.print(r + " " + map.size() + " ");
+                for (Map.Entry<Integer,String> entry : map.entrySet()) {
+                    System.out.print(entry.getKey() + " " + entry.getValue());
+                }
+            }
+            System.out.println();*/
+
+
+            //选用arraylist作为结果集
+            ArrayList<Integer> list = new ArrayList<>();
+            for (Integer integer : r) {
+                String rnumber = String.valueOf(integer);
+                int count = 0;
+                ArrayList<Integer> sublist = new ArrayList<>();
+                for (int k = 0; k < n; k++) {
+                    if (i[k].contains(rnumber)) {
+                        count++;
+                        sublist.add(k);
+                        sublist.add(Integer.valueOf(i[k]));
+                    }
+                }
+                if (count > 0) {
+                    list.add(integer);
+                    list.add(count);
+                    list.addAll(sublist);
+                }
+            }
+
+            System.out.print(list.size() + (list.size() > 0 ? " " : ""));
+            for (int j = 0; j < list.size(); j++) {
+                System.out.print(list.get(j) + ((j == list.size() - 1) ? "" : " "));
+            }
+            System.out.println();//注意这个非常重要！！！因为测试数据是有多组的
+
+
         }
-        System.out.println(result);
     }
 }

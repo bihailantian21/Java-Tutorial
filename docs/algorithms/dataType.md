@@ -314,7 +314,52 @@ StringBuilder
 append()的参数可以是字符char       stringBuilder.append((char)(c + 1 +32));
 
 注意char和别的数字进行相加之后一定要自己再转换回char，要不然就是数字
+ StringBuffer 方法
+ 以下是 StringBuffer 类支持的主要方法：
+ 序号	方法描述
+ 1	public StringBuffer append(String s)
+ 将指定的字符串追加到此字符序列。
+ 2	public StringBuffer reverse()
+  将此字符序列用其反转形式取代。
+ 3	public delete(int start, int end)
+ 移除此序列的子字符串中的字符。
+ 4	public insert(int offset, int i)
+ 将 int 参数的字符串表示形式插入此序列中。
+ 5	replace(int start, int end, String str)
+ 使用给定 String 中的字符替换此序列的子字符串中的字符。
+ 下面的列表里的方法和 String 类的方法类似：
  
+ 序号	方法描述
+ 1	int capacity()
+ 返回当前容量。
+ 2	char charAt(int index)
+ 返回此序列中指定索引处的 char 值。
+ 3	void ensureCapacity(int minimumCapacity)
+ 确保容量至少等于指定的最小值。
+ 4	void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin)
+ 将字符从此序列复制到目标字符数组 dst。
+ 5	int indexOf(String str)
+ 返回第一次出现的指定子字符串在该字符串中的索引。
+ 6	int indexOf(String str, int fromIndex)
+ 从指定的索引处开始，返回第一次出现的指定子字符串在该字符串中的索引。
+ 7	int lastIndexOf(String str)
+ 返回最右边出现的指定子字符串在此字符串中的索引。
+ 8	int lastIndexOf(String str, int fromIndex)
+ 返回 String 对象中子字符串最后出现的位置。
+ 9	int length()
+  返回长度（字符数）。
+ 10	void setCharAt(int index, char ch)
+ 将给定索引处的字符设置为 ch。
+ 11	void setLength(int newLength)
+ 设置字符序列的长度。
+ 12	CharSequence subSequence(int start, int end)
+ 返回一个新的字符序列，该字符序列是此序列的子序列。
+ 13	String substring(int start)
+ 返回一个新的 String，它包含此字符序列当前所包含的字符子序列。
+ 14	String substring(int start, int end)
+ 返回一个新的 String，它包含此序列当前所包含的字符子序列。
+ 15	String toString()
+ 返回此序列中数据的字符串表示形式。
  
      
  6.Integer类的常用方法：
@@ -409,5 +454,19 @@ new Integer(a1.intValue()+a2.intValue())
 ‘0’：48~57
 ’A’：65~90
 ’a’：97~122
+char的用法：
+     * 一些技巧
+     * 在上面，我们看到了，char其实也是一个数字，所以，可以利用这样的特性，在编程的时候，使用一些小技巧。
+     * 比如，有一个字符为'1'，我们想将其变为数字1，或者，我们想将一个int类型的数字1转换为字符'1'，这时，我们就可以这样写：
+     * // '1' -> 1
+     * char c9 = '1';
+     * int num9 = c9 - '0';
+     * // 1 -> '1'
+     * int num10 = 1;
+     * char c10 = (char)(num10 + '0');
+     * 同样的，如果我们想用1 - 26来表示字母’a’ 到 ‘z’ ，也可以用类似的方法来表示。
+     char c = (char)('A' + i);
+     
+
 
  
