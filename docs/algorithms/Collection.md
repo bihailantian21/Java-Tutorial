@@ -262,6 +262,9 @@ Collections是JDK提供的工具类，同样位于java.util包中。它提供了
  public static int binarySearch(int[] a,int key) 对排序后的数组进行二分法检索，此方法被重载多次，可以对各种数据类型的数组进行搜索。
  public static String toString(int[] a) 输出数组信息，此方法被重载多次，可以输出各种数据类型的数组。
  
+ 
+ Arrays.equals(sArr,tArr)
+ 
 5.Comparable接口的作用
    之前Arrays类中存在sort()方法，注意sort方法中有一个专门对对象排序的辅助类参数，当然对于已经实现Comparable接口的对象直接对数组排序即可。
 Comparable接口：

@@ -39,6 +39,12 @@ import java.util.Scanner;
  */
 public class stringSort26 {
 
+
+    /**
+     * 1.注意一下，如何用0～25来表示a～z
+     * 2.如何表示除了大小写字母以外的字符
+     * @param args
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
@@ -48,19 +54,33 @@ public class stringSort26 {
             for (int i = 0; i < 26; i++) {
                 char c = (char)('A' + i);//A:65   a:97
                 for (int j = 0; j < chars.length; j++) {
-                    if (chars[j] == c || chars[j] == c - 'a' + 'A') {
+                    if (chars[j] == c || chars[j]  - 'a' + 'A' == c) {
                         result.append(chars[j]);
                     }
                 }
             }
 
             for (int i = 0; i < chars.length; i++) {
-                if ( !((chars[i] > 'A' && chars[i] < 'Z') || (chars[i] > 'a' && chars[i] < 'z'))) {
+                if ( !((chars[i] >= 'A' && chars[i] <= 'Z') || (chars[i] >= 'a' && chars[i] <= 'z'))) {
                     result.insert(i,chars[i]);
                 }
             }
             System.out.println(result.toString());
-            
         }
     }
+
+
+    /**
+     * 方法二：借助比较器
+     * Collections.sort(list, new Comparator<Character> () {
+     *                 @Override
+     *                 public int compare(Character o1, Character o2) {
+     *                     return Character.toLowerCase(o1)-Character.toLowerCase(o2);
+     *                 }
+     *
+     *              });
+     *
+     */
 }
+
+
