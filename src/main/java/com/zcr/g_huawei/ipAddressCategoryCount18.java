@@ -104,67 +104,41 @@ public class ipAddressCategoryCount18 {
             String ip = ipAndMask[0];
             String mask = ipAndMask[1];
 
-           /* if (!isValidFormat(ip) || !isValidFormat(mask)) {
+            if (isValidMask(mask)) {
+                String[] ip_arr = ip.split("\\.");
+                if (checkIP(ip_arr)) {
+                    int ip_sin1 = Integer.parseInt(ip_arr[0]);
+                    int ip_sin2 = Integer.parseInt(ip_arr[1]);
+                    if (1 <= ip_sin1 && ip_sin1 <= 126) {//注意不能写成1 <= ip_sin1 <= 126 就算是连续的也不行
+                        a++;
+                        if (ip_sin1 == 10) {
+                            pri++;
+                        }
+                    } else if (128 <= ip_sin1 && ip_sin1 <= 191) {
+                        b++;
+                        if (ip_sin1 == 172 && ip_sin2 >= 16 && ip_sin2 <= 31) {
+                            pri++;
+                        }
+                    } else if (192 <= ip_sin1 && ip_sin1 <= 223) {
+                        c++;
+                        if (ip_sin1 == 192 && ip_sin2 == 168) {
+                            pri++;
+                        }
+                    } else if (224 <= ip_sin1 && ip_sin1 <= 239) {
+                        d++;
+                    } else if (240 <= ip_sin1 && ip_sin1 <= 255) {
+                        e++;
+                    }
+                } else {
+                    err++;
+                }
+            } else {
                 err++;
-                continue;
-            }*/
-
-            if (!isValidMask(mask)) {
-                err++;
-                continue;
-            }
-
-            String[] ip_arr = ip.split("\\.");
-            int ip_sin1 = Integer.parseInt(ip_arr[0]);
-            int ip_sin2 = Integer.parseInt(ip_arr[1]);
-            if (1 <= ip_sin1 && ip_sin1 <= 126) {//注意不能写成1 <= ip_sin1 <= 126 就算是连续的也不行
-                a++;
-                if (ip_sin1 == 10) {
-                    pri++;
-                }
-            } else if (128 <= ip_sin1 && ip_sin1 <= 191) {
-                b++;
-                if (ip_sin1 == 172 && ip_sin2 >= 16 && ip_sin2 <= 31) {
-                    pri++;
-                }
-            } else if (192 <= ip_sin1 && ip_sin1 <= 223) {
-                c++;
-                if (ip_sin1 == 192 && ip_sin2 == 168) {
-                    pri++;
-                }
-            } else if (224 <= ip_sin1 && ip_sin1 <= 239) {
-                d++;
-            } else if (240 <= ip_sin1 && ip_sin1 <= 255) {
-                e++;
             }
         }
-        scanner.close();
         System.out.printf("%d %d %d %d %d %d %d", a, b, c, d, e, err, pri);
     }
 
-    /*private static boolean isValidFormat(String ip) {
-        boolean res = true;
-        if (ip == null || "".equals(ip))
-            return false;
-        Pattern pattern = Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+)\\.(\\d+)$");
-        Matcher matcher = pattern.matcher(ip);
-
-        if (matcher.matches()) {
-            String[] nums = ip.split("\\.");
-            for (String num : nums) {
-                int n = Integer.valueOf(num);
-                if (n < 0 || n > 255) {
-                    res = false;
-                    break;
-                }
-            }
-        } else {
-            res = false;
-        }
-
-        return res;
-    }
-*/
     private static boolean isValidMask(String mask) {
         String[] mask_arr = mask.split("\\.");
         StringBuilder stringBuilder = new StringBuilder();
@@ -177,9 +151,46 @@ public class ipAddressCategoryCount18 {
             return false;
         }
         return true;
+
+/*根本不需要这样的笨办法，而是找规律
+        // check mask
+        String[] mask_arr = mask.split("\\.");
+        if (mask_arr[0].equals("255")) {
+            if (mask_arr[1].equals("255")) {
+                if (mask_arr[2].equals("255")) {
+                    return mask_arr[3].equals("254") || mask_arr[3].equals("252") || mask_arr[3].equals("248") ||
+                            mask_arr[3].equals("240") || mask_arr[3].equals("224") || mask_arr[3].equals("192") ||
+                            mask_arr[3].equals("128") || mask_arr[3].equals("0");
+                } else if (mask_arr[2].equals("254") || mask_arr[2].equals("252") || mask_arr[2].equals("248") ||
+                        mask_arr[2].equals("240") || mask_arr[2].equals("224") || mask_arr[2].equals("192") ||
+                        mask_arr[2].equals("128") || mask_arr[2].equals("0")) {
+                    return mask_arr[3].equals("0");
+                } else
+                    return false;
+            } else if (mask_arr[1].equals("254") || mask_arr[1].equals("252") || mask_arr[1].equals("248") ||
+                    mask_arr[1].equals("240") || mask_arr[1].equals("224") || mask_arr[1].equals("192") ||
+                    mask_arr[1].equals("128") || mask_arr[1].equals("0")) {
+                return mask_arr[2].equals("0") && mask_arr[3].equals("0");
+            } else {
+                return false;
+            }
+        } else if (mask_arr[0].equals("254") || mask_arr[0].equals("252") || mask_arr[0].equals("248") ||
+                mask_arr[0].equals("240") || mask_arr[0].equals("224") || mask_arr[0].equals("192") ||
+                mask_arr[0].equals("128") || mask_arr[0].equals("0")) {
+            return mask_arr[1].equals("0") && mask_arr[2].equals("0") && mask_arr[3].equals("0");
+        } else {
+            return false;
+        }*/
+    }
+
+    private static boolean checkIP(String[] ip) {
+        return ip.length == 4 && !ip[0].equals("") && !ip[1].equals("") && !ip[2].equals("") && !ip[3].equals("");
     }
 
 
+    /**
+     * 这个才是100%AC
+     */
     class Main {
         public void main(String[] args) {
             Scanner sc = new Scanner(System.in);
