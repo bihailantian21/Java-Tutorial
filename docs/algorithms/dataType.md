@@ -387,6 +387,28 @@ append()的参数可以是字符char       stringBuilder.append((char)(c + 1 +32
      * String toBinaryString(int i)   //以2为基返回整数参数的字符串表示形式，表示为无符号整数
      * (2)
      * Java Integer.toHexString()十进制转成十六进制
+十六进制数的特点：
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+A   10
+B   11
+C   12
+D   13
+E   14
+F   15
+
+‘0’：48~57
+’A’：65~90
+’a’：97~122
+
      * (3)
      * Java Integer.toOctalString()十进制转成八进制
      * (4)

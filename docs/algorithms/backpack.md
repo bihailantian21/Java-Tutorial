@@ -1,3 +1,16 @@
+public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNextLine()) {
+            String str1 = scanner.nextLine();
+            System.out.println(String.valueOf(Encrypt(str1.toCharArray())));
+            String str2 = scanner.nextLine();
+            System.out.println(String.valueOf(unEncrypt(str2.toCharArray())));
+
+        }
+    }
+
+
+
 背包问题是一个经典的动态规划模型。它既简单形象容易理解，又在某种程度上能够揭示动态规划的本质，故不少教材都把它作为动态规划部分的第一道例题，我也将它放在我的写作计划的第一部分。
 
 目录

@@ -71,6 +71,7 @@ public class ZigZagConversion6 {
         for (int i = 0; i < numRows; i++) {
             stringBuilders[i] = new StringBuilder();
         }
+
         int i = 0;
         while (i < len) {
             for (int idx = 0; idx < numRows && i < len; idx++) {
