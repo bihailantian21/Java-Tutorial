@@ -116,13 +116,14 @@ public class EntryNodeOfLoop56 {
      * @return
      */
     public ListNode EntryNodeOfLoop(ListNode head) {
-        if (head.next == null || head.next.next == null) {
+        if (head.next == null || head.next.next == null) {//这里很重要，为什么还要判断head.next.next == null，因为下面要让head指向它
             return null;
         }
-        ListNode slow = head.next;
-        ListNode fast = head.next.next;
+        ListNode slow = head.next;//这里很重要,这里slow要从head的下一个位置就开始！
+        ListNode fast = head.next.next;//这里很重要,fast要从head的下一个位置的下一个位置就开始！因为要让下面的循环可以顺利进行，
+        // 所以刚开始就得让开始走一步或者两步，这样快慢指针刚开始才不会重合。
         while (slow != fast) {
-            if (fast.next == null || fast.next.next == null) {
+            if (fast.next == null || fast.next.next == null) {//这里很重要，为什么还要判断fast.next.next == null，因为下面要让fast指向它
                 return null;
             }
             slow = slow.next;

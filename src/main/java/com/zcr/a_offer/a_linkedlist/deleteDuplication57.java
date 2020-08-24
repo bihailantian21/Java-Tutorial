@@ -38,10 +38,11 @@ public class deleteDuplication57 {
         ListNode cur = head;
 
         while (cur != null) {
-            if (cur.next != null && cur.value == cur.next.value) {//有重复的
+            if (cur.next != null && cur.value == cur.next.value) {//注意这里的判断条件非常重要
+                //有重复的
                 //找到最后一个相同的节点
                 while (cur.next != null && cur.value == cur.next.value) {
-                    cur = cur.next;
+                    cur.next = cur.next.next;
                 }
                 pre.next = cur.next;
                 cur = cur.next;

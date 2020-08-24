@@ -123,7 +123,7 @@ public class Clone26 {
         while (cur != null) {
             next = cur.next.next;//保存原来链表中的下一个
             copyCur = cur.next;
-            copyCur.random = cur.random != null ? cur.random.next : null;
+            copyCur.random = cur.random != null ? cur.random.next : null;//这里做判断很重要
             cur = next;
         }
         //3、将链表拆成两个链表，返回第二个链表的头部；
@@ -133,7 +133,7 @@ public class Clone26 {
             next = cur.next.next;//保存原来链表中的下一个
             copyCur = cur.next;
             cur.next = next;
-            copyCur.next = next != null ? next.next : null;
+            copyCur.next = next != null ? next.next : null;//这里做判断很重要
             cur = next;
         }
         return copyHead;

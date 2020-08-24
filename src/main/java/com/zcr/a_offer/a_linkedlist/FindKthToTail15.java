@@ -12,7 +12,7 @@ import com.zcr.b_leetcode.ListNode;
  * 3、如果链表中的节点个数小于k，而不做任何处理，会报错
  * 4、如果k大于节点个数，也返回null
  *
- * 1->2->3->4->5 2
+ * 1->2->3->4->5        2
  * |     |
  *          |     |
  *
@@ -33,17 +33,38 @@ public class FindKthToTail15 {
         }
         ListNode fast = head;
         ListNode slow = head;
-        for (int i = 0; i < k; i++) {
-            if (fast == null) {//避免问题3、4出现
+        for (int i = 0; i < k; i++) {//这里
+            if (fast == null) {//这里，就是说原链表大小大于k
                 return null;
             }
             fast = fast.next;
         }
-        while (fast != null) {//这里一定要注意是fast而不是fast.next
+        while (fast != null) {//这里一定要注意是fast而不是fast.next，因为是fast==null时，slow走到了倒数第k个
             fast = fast.next;
             slow = slow.next;
         }
         return slow;
+/*
+        if(head == null || k == 0) {
+            return null;
+        }
+        int i = 0;
+        ListNode fast = head;
+        ListNode slow = head;
+        while(i < k - 1) {//这里
+            if(fast.next == null) {//这里，就是说原链表大小大于k
+                return null;
+            }
+            fast = fast.next;
+            i++;
+        }
+        while(fast.next != null) {//这里     当fast.next==null时，slow走到了倒数第k个
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return slow;
+        */
+
     }
 
     /**

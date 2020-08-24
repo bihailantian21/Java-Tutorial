@@ -10,7 +10,8 @@ import java.util.HashSet;
  */
 public class FindFirstCommonNode37 {
 
-    /**
+    /**nopass
+     *
      * 直观解法：在第一个链表上顺序遍历每个节点，每遍历到一个节点的时候，在第二个链表上顺序遍历每个节点。
      * 如果在第二个链表上有一个节点和第一个链表上的节点一样，说明两个链表在z这个节点上重合，就找到了t他们的公共节点。
      * 时间：O(mn)
@@ -35,6 +36,7 @@ public class FindFirstCommonNode37 {
     }
 
     /**
+     * nopass
      * 最简单的想法，使用一个Set存储pHead1中的所有节点，然后遍历pHead2每一个节点，
      * 查看set中是否存在该节点即可。
      *
